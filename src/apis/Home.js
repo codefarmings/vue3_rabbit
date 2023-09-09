@@ -4,3 +4,14 @@ export function getBannerAPI(){
         url:'/home/banner'
     })
 }
+
+export function findNewAPI(){
+    return http({
+        url:'/home/new'
+    })
+}
+export function getHotAPI(){
+    return  http({
+        url:'/home/hot'
+    })
+}
