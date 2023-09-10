@@ -6,7 +6,7 @@ const getBanner=async()=>{
     const res=await getBannerAPI()
     // console.log(res);
     bannerList.value=res.result
-     console.log(bannerList.value);
+    
 }
 onMounted(()=>getBanner())
 </script>
