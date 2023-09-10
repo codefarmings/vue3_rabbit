@@ -1,7 +1,11 @@
 import http from '@/utils/http'
-export function getBannerAPI(){
+export function getBannerAPI(query={}){
+    const {distributionSite}=query
     return http({
-        url:'/home/banner'
+        url:'/home/banner',
+        query:{
+            distributionSite
+        }
     })
 }
 
