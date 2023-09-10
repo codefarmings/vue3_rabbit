@@ -1,34 +1,15 @@
 <script setup>
-import { ref,onMounted } from "vue";
-import { getCategoryAPI } from "@/apis/category";
-import { useRoute } from "vue-router";
-import { getBannerAPI } from "@/apis/Home";
+
+
+import {useBanner} from './composables/useBanner'
+import {useCategory} from './composables/useCategory'
 import GoodsItem from "@/views/Home/components/GoodsItem.vue";
-import { onBeforeRouteUpdate } from "vue-router";
-const categoryDate = ref({});
-const route = useRoute();
-const getCategory = async (id=route.params.id) => {
-  const res = await getCategoryAPI(id);
-  categoryDate.value = res.result;
-};
-onMounted(() => {
-  getCategory(route.params.id);
-});
+const {bannerList}= useBanner()
+const {categoryDate}=useCategory()
 
 
 // 轮播图
-const bannerList = ref([]);
-const getBanner = async () => {
-  const res = await getBannerAPI({ distributionSite: "2" });
-  // console.log(res);
-  bannerList.value = res.result;
-};
-onMounted(() => getBanner());
-// 路由参数发生变化后，可以通过路由监听器来监听路由参数的变化
-onBeforeRouteUpdate((to)=>{
-  console.log('路由变化了');
-  getCategory(to.params.id);
-})
+
 </script>
 
 <template>
