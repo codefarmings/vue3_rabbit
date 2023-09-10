@@ -1,30 +1,34 @@
 <script setup>
-import { ref ,onUpdated,onMounted} from 'vue'
-import {getCategoryAPI} from '@/apis/category'
-import {useRoute} from 'vue-router'
-import {getBannerAPI} from '@/apis/Home'
-const categoryDate=ref({})
-const route=useRoute()
-const getCategory=async(id)=>{
-    const res=await getCategoryAPI(id)
-    categoryDate.value=res.result
-}
-onMounted(()=>{
-    getCategory(route.params.id)
-})
-onUpdated(()=>{
-    getCategory(route.params.id)
-})
-// 轮播图
-const bannerList=ref([])
-const getBanner=async()=>{
-    const res=await getBannerAPI({distributionSite: '2'})
-    // console.log(res);
-    bannerList.value=res.result
-    
-}
-onMounted(()=>getBanner())
+import { ref,onMounted } from "vue";
+import { getCategoryAPI } from "@/apis/category";
+import { useRoute } from "vue-router";
+import { getBannerAPI } from "@/apis/Home";
+import GoodsItem from "@/views/Home/components/GoodsItem.vue";
+import { onBeforeRouteUpdate } from "vue-router";
+const categoryDate = ref({});
+const route = useRoute();
+const getCategory = async (id=route.params.id) => {
+  const res = await getCategoryAPI(id);
+  categoryDate.value = res.result;
+};
+onMounted(() => {
+  getCategory(route.params.id);
+});
 
+
+// 轮播图
+const bannerList = ref([]);
+const getBanner = async () => {
+  const res = await getBannerAPI({ distributionSite: "2" });
+  // console.log(res);
+  bannerList.value = res.result;
+};
+onMounted(() => getBanner());
+// 路由参数发生变化后，可以通过路由监听器来监听路由参数的变化
+onBeforeRouteUpdate((to)=>{
+  console.log('路由变化了');
+  getCategory(to.params.id);
+})
 </script>
 
 <template>
@@ -34,17 +38,41 @@ onMounted(()=>getBanner())
       <div class="bread-container">
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>{{categoryDate.name}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ categoryDate.name }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-<!-- 轮播图 -->
-<div class="home-banner">
-    <el-carousel height="500px">
-      <el-carousel-item v-for="item in bannerList" :key="item.id">
-        <img :src="item.imgUrl" alt="">
-      </el-carousel-item>
-    </el-carousel>
-  </div>
+      <!-- 轮播图 -->
+      <div class="home-banner">
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img :src="item.imgUrl" alt="" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+      <!-- 分类 -->
+      <div class="sub-list">
+        <h3>全部分类</h3>
+        <ul>
+          <li v-for="i in categoryDate.children" :key="i.id">
+            <RouterLink to="/">
+              <img :src="i.picture" />
+              <p>{{ i.name }}</p>
+            </RouterLink>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="ref-goods"
+        v-for="item in categoryDate.children"
+        :key="item.id"
+      >
+        <div class="head">
+          <h3>- {{ item.name }}-</h3>
+        </div>
+        <div class="body">
+          <GoodsItem v-for="goods in item.goods" :goods="goods" :key="goods.id" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -72,7 +100,6 @@ onMounted(()=>getBanner())
       li {
         width: 168px;
         height: 160px;
-
 
         a {
           text-align: center;
@@ -131,7 +158,7 @@ onMounted(()=>getBanner())
 .home-banner {
   width: 1240px;
   height: 500px;
- margin: 0 auto;
+  margin: 0 auto;
 
   img {
     width: 100%;
