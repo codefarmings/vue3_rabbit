@@ -6,3 +6,9 @@ export function getDetailAPI(id){
         params:{id}
     })
 }
+export function getDetailHotAPI({ id, type, limit = 3 }){
+    return http({
+        url:'/goods/hot',
+        params:{id, type, limit}
+    })
+}

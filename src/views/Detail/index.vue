@@ -2,14 +2,14 @@
 import {getDetailAPI} from '@/apis/detail'
 import { ref,onMounted} from 'vue'
 import {useRoute} from 'vue-router'
+import DetailHot from './components/DetailHot.vue'
 // 商品详情页
-const goods=ref([])
+const goods=ref({})
 const route=useRoute()
 const getGoods=async()=>{
   const res=await getDetailAPI(route.params.id)
   goods.value=res.result
 }
-
 onMounted(()=>getGoods())
 </script>
 
@@ -19,9 +19,9 @@ onMounted(()=>getGoods())
       <div class="bread-container">
         <el-breadcrumb separator=">">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '`/category/${goods.categories[1].id}`' }">{{goods.categories[1].name}}
+          <el-breadcrumb-item :to="{ path:`/category/${goods.categories[1].id}` }">{{goods.categories[1].name}}
           </el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '`/category/${goods.categories[0].id}`' }">{{goods.categories[0].name}}
+          <el-breadcrumb-item :to="{ path:`/category/${goods.categories[0].id}` }">{{goods.categories[0].name}}
           </el-breadcrumb-item>
           <el-breadcrumb-item>{{goods.name}}</el-breadcrumb-item>
         </el-breadcrumb>
@@ -115,7 +115,10 @@ onMounted(()=>getGoods())
             </div>
             <!-- 24热榜+专题推荐 -->
             <div class="goods-aside">
-
+              <!-- 24小时热榜 -->
+              <DetailHot></DetailHot>
+              <!-- 周热榜 -->
+              <DetailHot></DetailHot>
             </div>
           </div>
         </div>
