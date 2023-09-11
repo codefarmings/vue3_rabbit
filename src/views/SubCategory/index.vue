@@ -20,6 +20,7 @@ const reqDate=ref({
     sortField:'publishTime'
 })
 const goodList=ref([])
+console.log(goodList);
 const getGoodList=async()=>{
     const res=await getSubCategoryAPI(reqDate.value)
     console.log(res);
