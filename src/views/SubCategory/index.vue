@@ -1,47 +1,60 @@
 <script setup>
-import { ref ,onMounted} from 'vue'
-import {getCategoryFilterAPI,getSubCategoryAPI} from '@/apis/category'
-import {useRoute} from 'vue-router'
-import GoodsItem from '@/views/Home/components/GoodsItem.vue'
-const route=useRoute()
+import { ref, onMounted } from "vue";
+import { getCategoryFilterAPI, getSubCategoryAPI } from "@/apis/category";
+import { useRoute } from "vue-router";
+import GoodsItem from "@/views/Home/components/GoodsItem.vue";
+const route = useRoute();
 // 面包屑二级分类
-const filterData = ref({})
-const getFilterData=async()=>{
-   const res=await getCategoryFilterAPI(route.params.id)
-   filterData.value=res.result
-}
-onMounted(()=>getFilterData())
+const filterData = ref({});
+const getFilterData = async () => {
+  const res = await getCategoryFilterAPI(route.params.id);
+  filterData.value = res.result;
+};
+onMounted(() => getFilterData());
 
 // 基础列表渲染
-const reqDate=ref({
-    categoryId:route.params.id,
-    page:1,
-    pageSize:20,
-    sortField:'publishTime'
-})
-const goodList=ref([])
-const getGoodList=async()=>{
-    const res=await getSubCategoryAPI(reqDate.value)
-    console.log(res);
-    goodList.value=res.result.items
-}
-onMounted(()=>getGoodList())
-const tabChange=()=>{
-  console.log('tab切换了',reqDate.value.sortField);
-  reqDate.value.page = 1
-  getGoodList()
-}
+const reqDate = ref({
+  categoryId: route.params.id,
+  page: 1,
+  pageSize: 20,
+  sortField: "publishTime",
+});
+const goodList = ref([]);
+const getGoodList = async () => {
+  const res = await getSubCategoryAPI(reqDate.value);
+  console.log(res);
+  goodList.value = res.result.items;
+};
+onMounted(() => getGoodList());
+const tabChange = () => {
+  console.log("tab切换了", reqDate.value.sortField);
+  reqDate.value.page = 1;
+  getGoodList();
+};
+// 禁止滚动
+const disabled = ref(false);
+// 无线滚动
+const load = async () => {
+  // console.log('滚动了');
+  reqDate.value.page++;
+  const res = await getSubCategoryAPI(reqDate.value);
+  goodList.value = [...goodList.value, ...res.result.items];
+  if (res.result.items.length === 0) {
+    disabled.value = true;
+  }
+};
 </script>
 
 <template>
-  <div class="container ">
+  <div class="container">
     <!-- 面包屑 -->
     <div class="bread-container">
       <el-breadcrumb separator=">">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path:`/category/${filterData.parentId}` }">居家
+        <el-breadcrumb-item :to="{ path: `/category/${filterData.parentId}` }"
+          >居家
         </el-breadcrumb-item>
-        <el-breadcrumb-item>{{filterData.name}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ filterData.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="sub-container">
@@ -50,16 +63,21 @@ const tabChange=()=>{
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
-         <!-- 商品列表-->
-        <GoodsItem v-for="goods in goodList" :goods="goods" :key="goods.id"></GoodsItem>
+      <div
+        class="body"
+        v-infinite-scroll="load"
+        :infinite-scroll-disabled="disabled"
+      >
+        <!-- 商品列表-->
+        <GoodsItem
+          v-for="goods in goodList"
+          :goods="goods"
+          :key="goods.id"
+        ></GoodsItem>
       </div>
     </div>
   </div>
-
 </template>
-
-
 
 <style lang="scss" scoped>
 .bread-container {
@@ -113,7 +131,5 @@ const tabChange=()=>{
     display: flex;
     justify-content: center;
   }
-
-
 }
 </style>
