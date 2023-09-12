@@ -1,16 +1,15 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useMouseInElement } from "@vueuse/core";
+defineProps({
+  // 图片列表
+  imageList: {
+    type: Array,
+    default: () => [],
+  },
+});
 const curIndex = ref(0);
 const mouseEnterFn = (i) => (curIndex.value = i);
-// 图片列表
-const imageList = [
-  "https://yanxuan-item.nosdn.127.net/d917c92e663c5ed0bb577c7ded73e4ec.png",
-  "https://yanxuan-item.nosdn.127.net/e801b9572f0b0c02a52952b01adab967.jpg",
-  "https://yanxuan-item.nosdn.127.net/b52c447ad472d51adbdde1a83f550ac2.jpg",
-  "https://yanxuan-item.nosdn.127.net/f93243224dc37674dfca5874fe089c60.jpg",
-  "https://yanxuan-item.nosdn.127.net/f881cfe7de9a576aaeea6ee0d1d24823.jpg",
-];
 // 放大镜
 const target = ref(null);
 const left = ref(0);
@@ -21,7 +20,7 @@ const positionY = ref(0);
 watch([elementX, elementY, isOutside], () => {
   // console.log("xy变化了");
   //  如果鼠标不在盒子内,直接不执行后面的逻辑
-  if (isOutside) return;
+  if (!isOutside) return;
   // 有效范围内控制滑块距离
   // 横向
 
