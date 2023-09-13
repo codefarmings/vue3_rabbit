@@ -1,6 +1,15 @@
 <script setup>
 import {useUserStore} from '@/stores/user'
+import {useRouter} from 'vue-router'
+const router=useRouter()
 const useStroe=useUserStore()
+const confirm=()=>{
+  // console.log('用户退出登录');
+  // 退出业务的逻辑
+  useStroe.clearUserInfo()
+  router.push('/login')
+
+}
 </script>
 
 <template>
@@ -10,9 +19,9 @@ const useStroe=useUserStore()
         <template v-if="useStroe.userInfo.token">
           <li><a href="javascript:;"><i class="iconfont icon-user"></i>{{useStroe.userInfo.account}}</a></li>
           <li>
-            <el-popconfirm title="确认退出吗?" confirm-button-text="确认" cancel-button-text="取消">
+            <el-popconfirm @confirm="confirm" title="确认退出吗?" confirm-button-text="确认" cancel-button-text="取消">
               <template #reference>
-                <a href="javascript:;" @click="$router.push('/login')">退出登录</a>
+                <a href="javascript:;">退出登录</a>
               </template>
             </el-popconfirm>
           </li>
