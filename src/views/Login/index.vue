@@ -1,8 +1,12 @@
 <script setup>
 import { ref } from "vue";
+import {getLoginInfoAPI} from '@/apis/user'
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
+import { useRouter } from "vue-router";
 const form = ref({
-  account: "",
-  password: "",
+  account: "xiaotuxian001",
+  password: "123456",
   agree: true,
 });
 const rules = ref({
@@ -22,12 +26,20 @@ const rules = ref({
 
 // 获取form实例做统一校验
 const formRef = ref(null);
+const router=useRouter();
 const doLogin = () => {
   // 调用实例方法
-  formRef.value.validate((valid)=>{
+  formRef.value.validate(async(valid)=>{
+    const {account,password} = form.value
     console.log(valid);
     if(valid){
-      console.log('通过');
+      // console.log('通过');
+  const res=await getLoginInfoAPI({account,password})
+  console.log(res);
+  // 提示用户
+  ElMessage({type:'success',message:'登录成功'})
+  // 跳转页面
+  router.replace({path:'/'})
     }
   })
     //vaild： 所有表达那通过验证,才为true
