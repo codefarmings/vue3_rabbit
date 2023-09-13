@@ -1,25 +1,39 @@
 <script setup>
-import { ref } from 'vue'
-const form =ref({
-  account:'',
-  password:'',
-  agree:true
-})
-const rules=ref({
-  account:[
-    { required: true, message: '请输入账号', trigger: 'blur' }
+import { ref } from "vue";
+const form = ref({
+  account: "",
+  password: "",
+  agree: true,
+});
+const rules = ref({
+  account: [{ required: true, message: "请输入账号", trigger: "blur" }],
+  password: [
+    { required: true, message: "请输入密码", trigger: "blur" },
+    { min: 6, max: 16, message: "长度在 6 到 16 个字符", trigger: "blur" },
   ],
-  password:[
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur'}
+  agree: [
+    {
+      validator: (rule, val, callback) => {
+        return val ? callback() : callback(new Error("请勾选协议"));
+      },
+    },
   ],
-  agree:[{
-    validator:(rule,val,callback)=>{
-      return val?callback():callback(new Error('请勾选协议'))
-    }
-  }]
+});
 
-})
+// 获取form实例做统一校验
+const formRef = ref(null);
+const doLogin = () => {
+  // 调用实例方法
+  formRef.value.validate((valid)=>{
+    console.log(valid);
+    if(valid){
+      console.log('通过');
+    }
+  })
+    //vaild： 所有表达那通过验证,才为true
+  
+  
+};
 </script>
 
 
@@ -44,20 +58,28 @@ const rules=ref({
         </nav>
         <div class="account-box">
           <div class="form">
-            <el-form :model="form" :rules="rules" label-position="right" label-width="60px"
-              status-icon>
+            <el-form
+              ref="formRef"
+              :model="form"
+              :rules="rules"
+              label-position="right"
+              label-width="60px"
+              status-icon
+            >
               <el-form-item prop="account" label="账户">
-                <el-input  v-model="form.account" />
+                <el-input v-model="form.account" />
               </el-form-item>
               <el-form-item prop="password" label="密码">
-                <el-input  v-model="form.password"/>
+                <el-input v-model="form.password" />
               </el-form-item>
               <el-form-item prop="agree" label-width="22px">
-                <el-checkbox v-model="form.agree"  size="large">
+                <el-checkbox v-model="form.agree" size="large">
                   我已同意隐私条款和服务条款
                 </el-checkbox>
               </el-form-item>
-              <el-button size="large" class="subBtn" >点击登录</el-button>
+              <el-button @click="doLogin" size="large" class="subBtn"
+                >点击登录</el-button
+              >
             </el-form>
           </div>
         </div>
@@ -100,7 +122,8 @@ const rules=ref({
       height: 132px;
       width: 100%;
       text-indent: -9999px;
-      background: url("@/assets/images/logo.png") no-repeat center 18px / contain;
+      background: url("@/assets/images/logo.png") no-repeat center 18px /
+        contain;
     }
   }
 
@@ -127,7 +150,7 @@ const rules=ref({
 }
 
 .login-section {
-  background: url('@/assets/images/login-bg.png') no-repeat center / cover;
+  background: url("@/assets/images/login-bg.png") no-repeat center / cover;
   height: 488px;
   position: relative;
 
@@ -177,7 +200,7 @@ const rules=ref({
       color: #999;
       display: inline-block;
 
-      ~a {
+      ~ a {
         border-left: 1px solid #ccc;
       }
     }
@@ -208,7 +231,7 @@ const rules=ref({
         position: relative;
         height: 36px;
 
-        >i {
+        > i {
           width: 34px;
           height: 34px;
           background: #cfcdcd;
@@ -253,7 +276,7 @@ const rules=ref({
         }
       }
 
-      >.error {
+      > .error {
         position: absolute;
         font-size: 12px;
         line-height: 28px;
