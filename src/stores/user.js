@@ -11,4 +11,8 @@ import {getLoginInfoAPI} from '@/apis/user'
         userInfo,
         getUserInfo
     }
- })
+ },
+ {
+    persist: true,
+  }
+ )
