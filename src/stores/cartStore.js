@@ -33,17 +33,28 @@ export const useCartStore = defineStore('cart', () => {
     const item=cartList.value.find((item)=>item.skuId===skuId)
     item.selected=selected
   }
+  // 全选
+  const checkAll=(selected)=>{
+    cartList.value.forEach((item)=>
+      item.selected=selected
+    )
+  }
   // 计算属性
   // 计算总件数
   const allCount=computed(()=>cartList.value.reduce((a,c)=>a+c.count,0))
   // 计算总价钱
   const allPrice=computed(()=>cartList.value.reduce((a,c)=>a+c.count*c.price,0))
+
+  // 是否全选
+  const isAll=computed(()=>cartList.value.every((item)=>item.selected))
   return {
     cartList,
     addCart,
     allCount,
     allPrice,
     removeCart,
+    isAll,
+    checkAll,
     singleCheck
   }
 }, {
