@@ -17,3 +17,15 @@ export const findNewCartListAPI=()=>{
         url:'/member/cart',
     })
 }
+
+
+// 删除购物车接口
+export const delCartAPI=(ids)=>{
+    return http({
+        url:'/member/cart',
+        method:'delete',
+        data:{
+            ids
+        }
+    })
+}

@@ -2,8 +2,12 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import {useUserStore} from './user'
-import {insertCartAPI,findNewCartListAPI} from '@/apis/cart'
+import {insertCartAPI,findNewCartListAPI,delCartAPI} from '@/apis/cart'
 export const useCartStore = defineStore('cart', () => {
+  const updataNewList=async()=>{
+    const res=await findNewCartListAPI()
+    cartList.value=res.result
+  }
   // 1. 定义state - cartList
   const cartList = ref([])
   // 判断是否登录
@@ -15,8 +19,7 @@ export const useCartStore = defineStore('cart', () => {
     if(isLogin.value){
       // 登录之后的购物车逻辑
      await insertCartAPI({skuId,count})
-     const res=await findNewCartListAPI()
-     cartList.value=res.result
+     updataNewList()
     }else{
       // 添加购物车操作
     // 已添加过 - count + 1
@@ -34,11 +37,17 @@ export const useCartStore = defineStore('cart', () => {
     
   };
   // 删除购物车
-  const removeCart=(skuId)=>{
-    // 找到要删除项的下标值-findIndex
+  const removeCart=async(skuId)=>{
+    if(isLogin.value){
+    await  delCartAPI([skuId])
+    updataNewList()
+    }else{
+       // 找到要删除项的下标值-findIndex
     // 通过splice方法删除
     const idx=cartList.value.findIndex((item)=>skuId===item.skuId)
     cartList.value.splice(idx,1)
+    }
+   
   };
   // 单选功能
   const singleCheck=(skuId,selected)=>{
