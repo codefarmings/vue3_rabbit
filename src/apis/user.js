@@ -9,3 +9,12 @@ export function getLoginInfoAPI({account,password}){
         }
     })
 }
+// 猜你喜欢接口
+export const getLikeListAPI = ({ limit = 4 }) => {
+    return http({
+      url:'/goods/relevant',
+      params: {
+        limit 
+      }
+    })
+  }
