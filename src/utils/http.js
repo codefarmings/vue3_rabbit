@@ -6,7 +6,7 @@ import { useUserStore } from "@/stores/user";
 import router from '@/router'
 const http = axios.create({
   //根地址
-  baseURL: "http://pcapi-xiaotuxian-front-devtest.itheima.net",
+  baseURL: "http://pcapi-xiaotuxian-front-devtest.itheima.net/",
   //超时时间
   timeout: 8000,
 });
